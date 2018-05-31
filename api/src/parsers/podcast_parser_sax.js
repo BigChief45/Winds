@@ -33,9 +33,9 @@ module.exports = function parse(feedXML, callback) {
 			// root channel
 			node.target = result;
 			node.textMap = {
-				'title': true,
-				'link': true,
-				'language': text => {
+				title: true,
+				link: true,
+				language: text => {
 					var lang = text;
 					if (!/\w\w-\w\w/i.test(text)) {
 						if (lang === 'en') {
@@ -49,11 +49,11 @@ module.exports = function parse(feedXML, callback) {
 					return { language: lang.toLowerCase() };
 				},
 				'itunes:subtitle': 'description.short',
-				'description': 'description.long',
-				'ttl': text => {
+				description: 'description.long',
+				ttl: text => {
 					return { ttl: parseInt(text) };
 				},
-				'pubDate': text => {
+				pubDate: text => {
 					return { updated: new Date(text) };
 				},
 				'itunes:explicit': isExplicit,
@@ -87,12 +87,12 @@ module.exports = function parse(feedXML, callback) {
 			tmpEpisode = {};
 			node.target = tmpEpisode;
 			node.textMap = {
-				'title': true,
-				'guid': true,
-				'link': true,
+				title: true,
+				guid: true,
+				link: true,
 				'itunes:summary': 'description.primary',
-				'description': 'description.alternate',
-				'pubDate': text => {
+				description: 'description.alternate',
+				pubDate: text => {
 					return { published: new Date(text) };
 				},
 				'itunes:duration': text => {
@@ -120,7 +120,9 @@ module.exports = function parse(feedXML, callback) {
 				tmpEpisode.image = node.attributes.href;
 			} else if (node.name === 'enclosure') {
 				tmpEpisode.enclosure = {
-					filesize: node.attributes.length ? parseInt(node.attributes.length) : undefined,
+					filesize: node.attributes.length
+						? parseInt(node.attributes.length)
+						: undefined,
 					type: node.attributes.type,
 					url: node.attributes.url,
 				};
@@ -141,8 +143,8 @@ module.exports = function parse(feedXML, callback) {
 				description = tmpEpisode.description.primary;
 				if (
 					!description ||
-                    (tmpEpisode.description.alternate &&
-                        tmpEpisode.description.alternate.length > description.length)
+					(tmpEpisode.description.alternate &&
+						tmpEpisode.description.alternate.length > description.length)
 				) {
 					description = tmpEpisode.description.alternate;
 				}
@@ -178,7 +180,11 @@ module.exports = function parse(feedXML, callback) {
 					const prevValue = node.parent.target[keyName];
 					// ontext can fire multiple times, if so append to previous value
 					// this happens with "text &amp; other text"
-					_.set(node.parent.target, keyName, prevValue ? `${prevValue} ${text}` : text);
+					_.set(
+						node.parent.target,
+						keyName,
+						prevValue ? `${prevValue} ${text}` : text,
+					);
 				}
 			}
 		}

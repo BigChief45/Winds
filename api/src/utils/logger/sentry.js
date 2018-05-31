@@ -35,11 +35,14 @@ const prepareMeta = info => {
 		msg = info.message;
 	}
 
-	return [msg, {
-		level: winstonLevelToSentryLevel[info.level],
-		tags: info.tags || {},
-		extra,
-	}];
+	return [
+		msg,
+		{
+			level: winstonLevelToSentryLevel[info.level],
+			tags: info.tags || {},
+			extra,
+		},
+	];
 };
 
 class SentryWinstonTransport extends Transport {
@@ -60,16 +63,16 @@ class SentryWinstonTransport extends Transport {
 	}
 
 	/**
-     * @param {{}} info
-     * @param {string} info.level
-     * @param {Error|string} info.message
-     * @param {Function} done
-     */
+	 * @param {{}} info
+	 * @param {string} info.level
+	 * @param {Error|string} info.message
+	 * @param {Function} done
+	 */
 	async log(info, done) {
 		if (this.silent) return done(null, true);
 		let [msg, meta] = prepareMeta(info);
 
-		let method = info instanceof Error ? 'captureException': 'captureMessage';
+		let method = info instanceof Error ? 'captureException' : 'captureMessage';
 
 		try {
 			let eventId = await this.raven[method](msg, meta);

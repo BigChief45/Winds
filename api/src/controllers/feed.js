@@ -9,7 +9,10 @@ import Like from '../models/like';
 import config from '../config';
 import logger from '../utils/logger';
 
-const client = stream.connect(config.stream.apiKey, config.stream.apiSecret);
+const client = stream.connect(
+	config.stream.apiKey,
+	config.stream.apiSecret,
+);
 
 exports.get = (req, res) => {
 	const params = req.params || {};
@@ -238,6 +241,8 @@ exports.get = (req, res) => {
 				res.status(500).send(err);
 			});
 	} else {
-		res.status(400).send('Request must include "type" of user, timeline, article or episode');
+		res.status(400).send(
+			'Request must include "type" of user, timeline, article or episode',
+		);
 	}
 };

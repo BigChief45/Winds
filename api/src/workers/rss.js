@@ -18,7 +18,10 @@ import { ParseFeed } from '../parsers';
 import async_tasks from '../async_tasks';
 import { getStatsDClient, timeIt } from '../utils/statsd';
 
-const streamClient = stream.connect(config.stream.apiKey, config.stream.apiSecret);
+const streamClient = stream.connect(
+	config.stream.apiKey,
+	config.stream.apiSecret,
+);
 
 // connect the handler to the queue
 logger.info('Starting the RSS worker');

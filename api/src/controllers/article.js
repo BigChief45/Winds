@@ -190,7 +190,7 @@ exports.get = (req, res) => {
 										excerpt: parsed.excerpt,
 										image: parsed.lead_image_url || '',
 										publicationDate:
-                                            parsed.date_published || moment().toDate(),
+											parsed.date_published || moment().toDate(),
 										title: parsed.title,
 										url: article.url,
 										commentUrl: article.commentUrl,

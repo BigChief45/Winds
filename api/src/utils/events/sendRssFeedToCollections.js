@@ -3,16 +3,21 @@ import RSS from '../../models/rss';
 import Article from '../../models/article';
 import detectFeedLanguage from '../detectFeedLanguage';
 
-
 async function sendRssFeedToCollections(rssFeed) {
 	if (!rssFeed.language) {
 		rssFeed.language = await detectFeedLanguage(rssFeed.feedUrl);
-		await RSS.findByIdAndUpdate(rssFeed.id, { language: rssFeed.language }, { new: true });
+		await RSS.findByIdAndUpdate(
+			rssFeed.id,
+			{ language: rssFeed.language },
+			{ new: true },
+		);
 	}
 
 	let articles = await Article.find({
 		rss: rssFeed.id,
-	}).sort({ publicationDate: -1 }).limit(1000);
+	})
+		.sort({ publicationDate: -1 })
+		.limit(1000);
 
 	await events({
 		meta: {

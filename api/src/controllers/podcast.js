@@ -146,7 +146,7 @@ exports.post = (req, res) => {
 											);
 											if (
 												!podcast.value.images.og &&
-                                                podcast.value.link
+												podcast.value.link
 											) {
 												async_tasks
 													.OgQueueAdd(

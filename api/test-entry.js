@@ -9,9 +9,7 @@ require('babel-register')({
 			},
 		],
 	],
-	plugins: [
-		'shebang', 'transform-async-generator-functions',
-	],
+	plugins: ['shebang', 'transform-async-generator-functions'],
 });
 
 const sinon = require('sinon');

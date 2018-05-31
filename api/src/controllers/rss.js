@@ -115,7 +115,9 @@ exports.post = (req, res) => {
 	rssFinder(normalizeUrl(data.feedUrl))
 		.then(feeds => {
 			if (!feeds.feedUrls.length) {
-				return res.status(404).send('We couldn\'t find any feeds for that RSS feed URL :(');
+				return res
+					.status(404)
+					.send("We couldn't find any feeds for that RSS feed URL :(");
 			}
 
 			async.mapLimit(

@@ -21,7 +21,9 @@ const durationInMinutes = 15;
 
 // conductor runs conduct every interval seconds
 const conductor = () => {
-	logger.info(`Starting the conductor... will conduct every ${conductorInterval} seconds`);
+	logger.info(
+		`Starting the conductor... will conduct every ${conductorInterval} seconds`,
+	);
 
 	function forever() {
 		conduct();
@@ -72,7 +74,9 @@ async function conduct() {
 		logger.info(`marked ${updated.nModified} publications as isParsing`);
 
 		// actually schedule the update
-		logger.info(`conductor found ${publications.length} of type ${publicationType} to scrape`);
+		logger.info(
+			`conductor found ${publications.length} of type ${publicationType} to scrape`,
+		);
 		let promises = [];
 		for (let publication of publications) {
 			let job = { url: publication.feedUrl };
@@ -85,6 +89,8 @@ async function conduct() {
 		}
 		let results = await Promise.all(promises);
 
-		logger.info(`Processing complete! Will try again in ${conductorInterval} seconds...`);
+		logger.info(
+			`Processing complete! Will try again in ${conductorInterval} seconds...`,
+		);
 	}
 }

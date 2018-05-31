@@ -69,7 +69,9 @@ if (require.main === module) {
 			logger.error(err);
 			process.exit(1);
 		}
-		logger.info(`API is now running on port ${config.server.port} in ${config.env} mode`);
+		logger.info(
+			`API is now running on port ${config.server.port} in ${config.env} mode`,
+		);
 	});
 }
 

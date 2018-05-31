@@ -4,8 +4,8 @@ import normalize from 'normalize-url';
 import ogs from 'open-graph-scraper';
 
 // rss import model is needed because Article refs it
-import RSS from '../models/rss' // eslint-disable-line
-import Podcast from '../models/podcast' // eslint-disable-line
+import RSS from '../models/rss'; // eslint-disable-line
+import Podcast from '../models/podcast'; // eslint-disable-line
 
 import Article from '../models/article';
 import Episode from '../models/episode';
@@ -42,8 +42,8 @@ async function handleOg(job) {
 }
 
 async function isValidUrl(url) {
-	let invalid = invalidExtensions.some(extension=> {
-		if( url.endsWith(`.${extension}`)) {
+	let invalid = invalidExtensions.some(extension => {
+		if (url.endsWith(`.${extension}`)) {
 			return extension;
 		}
 	});
@@ -90,7 +90,9 @@ async function _handleOg(job) {
 	let instance = await mongoSchema.findOne({ [field]: url });
 
 	if (!instance) {
-		logger.warn(`instance not found for type ${jobType} with lookup ${field}: ${url}`);
+		logger.warn(
+			`instance not found for type ${jobType} with lookup ${field}: ${url}`,
+		);
 	} else if (instance.images.og && !job.data.update) {
 		logger.info(
 			`instance already has an image ${

@@ -15,7 +15,10 @@ import Follow from '../models/follow';
 import config from '../config';
 import logger from '../utils/logger';
 
-const client = stream.connect(config.stream.apiKey, config.stream.apiSecret);
+const client = stream.connect(
+	config.stream.apiKey,
+	config.stream.apiSecret,
+);
 
 exports.get = (req, res) => {
 	Follow.find({

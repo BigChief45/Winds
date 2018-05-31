@@ -7,11 +7,14 @@ require.resolve('raven');
 const executable = path.basename(process.argv[1]);
 var ravenInstance;
 
-function sendSourceMaps(data){
+function sendSourceMaps(data) {
 	var stacktrace = data.exception && data.exception[0].stacktrace;
 	if (stacktrace && stacktrace.frames) {
 		stacktrace.frames.forEach(function(frame) {
-			if (frame.filename.indexOf('/api/dist/') !== -1 && frame.filename.indexOf('/node_modules/') === -1) {
+			if (
+				frame.filename.indexOf('/api/dist/') !== -1 &&
+				frame.filename.indexOf('/node_modules/') === -1
+			) {
 				frame.filename = `app:///${frame.filename.split('api/dist/')[1]}`;
 			}
 		});
@@ -39,13 +42,13 @@ function captureError(err, msg) {
 	Raven.captureException(err);
 }
 
-exports.setupExpressRequestHandler = (app) => {
+exports.setupExpressRequestHandler = app => {
 	if (ravenInstance) {
 		app.use(ravenInstance.requestHandler());
 	}
 };
 
-exports.setupExpressErrorHandler = (app) => {
+exports.setupExpressErrorHandler = app => {
 	if (ravenInstance) {
 		app.use(ravenInstance.errorHandler());
 	}

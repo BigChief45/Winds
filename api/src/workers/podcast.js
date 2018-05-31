@@ -17,7 +17,10 @@ import util from 'util';
 
 import async_tasks from '../async_tasks';
 
-const streamClient = stream.connect(config.stream.apiKey, config.stream.apiSecret);
+const streamClient = stream.connect(
+	config.stream.apiKey,
+	config.stream.apiSecret,
+);
 
 // TODO: move this to separate main.js
 logger.info('Starting to process podcasts....');
@@ -28,7 +31,7 @@ async function handlePodcast(job) {
 	let promise = _handlePodcast(job);
 	promise.catch(err => {
 		logger.info(`podcast job ${job} broke with err ${err}`);
-      	logger.error(err);
+		logger.error(err);
 	});
 	return promise;
 }
@@ -73,18 +76,20 @@ async function _handlePodcast(job) {
 		return updatedEpisode && updatedEpisode.link;
 	});
 
-	await Promise.all(updatedEpisodes.map( episode => {
-		async_tasks.OgQueueAdd(
-			{
-				type: 'episode',
-				url: episode.link,
-			},
-			{
-				removeOnComplete: true,
-				removeOnFail: true,
-			},
-		);
-	}));
+	await Promise.all(
+		updatedEpisodes.map(episode => {
+			async_tasks.OgQueueAdd(
+				{
+					type: 'episode',
+					url: episode.link,
+				},
+				{
+					removeOnComplete: true,
+					removeOnFail: true,
+				},
+			);
+		}),
+	);
 
 	if (updatedEpisodes.length > 0) {
 		let chunkSize = 100;
@@ -148,8 +153,8 @@ async function upsertEpisode(podcastID, normalizedUrl, episode) {
 				upsert: true,
 			},
 		);
-	} catch(err) {
-		if (err.code === 11000){
+	} catch (err) {
+		if (err.code === 11000) {
 			return null;
 		} else {
 			throw error;

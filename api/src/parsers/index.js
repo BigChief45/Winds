@@ -7,14 +7,15 @@ import normalize from 'normalize-url';
 import FeedParser from 'feedparser';
 import podcastParser from './podcast_parser_sax';
 
-import Podcast from "../models/podcast" // eslint-disable-line
+import Podcast from '../models/podcast'; // eslint-disable-line
 import Episode from '../models/episode';
 
-import config from "../config" // eslint-disable-line
+import config from '../config'; // eslint-disable-line
 import logger from '../utils/logger';
 import { getStatsDClient } from '../utils/statsd';
 
-const WindsUserAgent = 'Winds: Open Source RSS & Podcast app: https://getstream.io/winds/';
+const WindsUserAgent =
+	'Winds: Open Source RSS & Podcast app: https://getstream.io/winds/';
 const AcceptHeader = 'text/html,application/xhtml+xml,application/xml';
 const statsd = getStatsDClient();
 
@@ -36,27 +37,35 @@ function ParseFeed(feedUrl, callback) {
 	let feedparser = new FeedParser();
 	let feedContents = { articles: [] };
 
-	let req = request(feedUrl, {
-		pool: false,
-		timeout: 6000,
-		gzip: true,
-	}, (error, response, body) => {
+	let req = request(
+		feedUrl,
+		{
+			pool: false,
+			timeout: 6000,
+			gzip: true,
+		},
+		(error, response, body) => {
+			if (error) {
+				return callback(error, feedContents);
+			}
 
-		if (error) {
-			return callback(error, feedContents);
-		}
+			if (response.statusCode !== 200) {
+				logger.warn(
+					`${feedUrl} returned status code ${response.statusCode}, skipping`,
+				);
+				return callback(null, feedContents);
+			}
 
-		if (response.statusCode !== 200) {
-			logger.warn(`${feedUrl} returned status code ${response.statusCode}, skipping`);
-			return callback(null, feedContents);
-		}
-
-		statsd.timing('winds.parsers.feed.transfer', (new Date() - t1));
-		t2 = new Date();
-		feedparser.end(body, ()=>{
-			statsd.timing('winds.parsers.feed.write_to_parser_stream', (new Date() - t2));
-		});
-	});
+			statsd.timing('winds.parsers.feed.transfer', new Date() - t1);
+			t2 = new Date();
+			feedparser.end(body, () => {
+				statsd.timing(
+					'winds.parsers.feed.write_to_parser_stream',
+					new Date() - t2,
+				);
+			});
+		},
+	);
 
 	req.setMaxListeners(50);
 	req.setHeader('User-Agent', WindsUserAgent);
@@ -69,7 +78,7 @@ function ParseFeed(feedUrl, callback) {
 	req.on('response', res => {
 		if (res.statusCode === 200) {
 			t1 = new Date();
-			statsd.timing('winds.parsers.feed.ttfb', (new Date() - t0));
+			statsd.timing('winds.parsers.feed.ttfb', new Date() - t0);
 		}
 	});
 
@@ -78,8 +87,8 @@ function ParseFeed(feedUrl, callback) {
 	});
 
 	feedparser.on('end', () => {
-		if (t2 !== null){
-			statsd.timing('winds.parsers.feed.finished_parsing', (new Date() - t2));
+		if (t2 !== null) {
+			statsd.timing('winds.parsers.feed.finished_parsing', new Date() - t2);
 		}
 		callback(null, feedContents);
 	});
@@ -89,17 +98,20 @@ function ParseFeed(feedUrl, callback) {
 		while ((postBuffer = feedparser.read())) {
 			let post = Object.assign({}, postBuffer);
 
-			let description = strip(entities.decodeHTML(post.description)).substring(0, 280);
+			let description = strip(entities.decodeHTML(post.description)).substring(
+				0,
+				280,
+			);
 
 			let parsedArticle = {
 				content: sanitize(post.summary),
 				description: description,
 				enclosures: post.enclosures,
 				publicationDate:
-				moment(post.pubdate).toISOString() ||
-				moment()
-					.subtract(feedContents.articles.length, 'minutes') // feedContents.articles only gets pushed to every time we parse an article, so it serves as a reasonable offset.
-					.toISOString(),
+					moment(post.pubdate).toISOString() ||
+					moment()
+						.subtract(feedContents.articles.length, 'minutes') // feedContents.articles only gets pushed to every time we parse an article, so it serves as a reasonable offset.
+						.toISOString(),
 				title: strip(entities.decodeHTML(post.title)),
 				url: normalize(post.link),
 				// For some sites like XKCD the content from RSS is better than Mercury
@@ -113,7 +125,9 @@ function ParseFeed(feedUrl, callback) {
 
 			// product hunt comments url
 			if (post.link.indexOf('https://www.producthunt.com') === 0) {
-				let matches = post.description.match(/(https:\/\/www.producthunt.com\/posts\/.*)"/);
+				let matches = post.description.match(
+					/(https:\/\/www.producthunt.com\/posts\/.*)"/,
+				);
 				if (matches.length) {
 					parsedArticle.commentUrl = matches[1];
 				}
@@ -121,7 +135,9 @@ function ParseFeed(feedUrl, callback) {
 
 			// nice images for XKCD
 			if (post.link.indexOf('https://xkcd') === 0) {
-				let matches = post.description.match(/(https:\/\/imgs.xkcd.com\/comics\/.*?)"/);
+				let matches = post.description.match(
+					/(https:\/\/imgs.xkcd.com\/comics\/.*?)"/,
+				);
 				if (matches.length) {
 					parsedArticle.images = { og: matches[1] };
 				}
@@ -139,7 +155,7 @@ function ParsePodcast(podcastUrl, callback) {
 	logger.info(`Attempting to parse podcast ${podcastUrl}`);
 	let opts = {
 		headers: {
-			'Accept': AcceptHeader,
+			Accept: AcceptHeader,
 			'User-Agent': WindsUserAgent,
 		},
 		pool: false,
@@ -179,10 +195,10 @@ function ParsePodcast(podcastUrl, callback) {
 						images: { og: episode.image },
 						link: episode.link,
 						publicationDate:
-						moment(episode.published).toISOString() ||
-						moment()
-							.subtract(podcastContents.episodes.length, 'minutes')
-							.toISOString(),
+							moment(episode.published).toISOString() ||
+							moment()
+								.subtract(podcastContents.episodes.length, 'minutes')
+								.toISOString(),
 						title: strip(episode.title),
 						url: normalize(url),
 					});

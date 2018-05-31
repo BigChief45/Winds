@@ -39,7 +39,10 @@ exports.status = async (req, res) => {
 	output.mostRecentArticle = moment(latestArticle.createdAt).fromNow();
 	output.mostRecentEpisode = moment(latestEpisode.createdAt).fromNow();
 
-	if (now - latestArticle.createdAt > tooOld || now - latestEpisode.createdAt > tooOld) {
+	if (
+		now - latestArticle.createdAt > tooOld ||
+		now - latestEpisode.createdAt > tooOld
+	) {
 		output.code = 500;
 		output.error =
 			now - latestArticle.createdAt > tooOld

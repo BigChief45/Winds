@@ -99,8 +99,9 @@ exports.delete = (req, res) => {
 				return res.sendStatus(404);
 			} else {
 				// remove the user document; 204 No Content confirms success
-				return User.findOneAndRemove({ _id: req.params.userId })
-					.then(user => res.status(204).send());
+				return User.findOneAndRemove({ _id: req.params.userId }).then(user =>
+					res.status(204).send(),
+				);
 			}
 		})
 		.catch(err => {
@@ -168,14 +169,20 @@ exports.put = (req, res) => {
 									RSS.find({ interest }).then(rssFeeds => {
 										return Promise.all(
 											rssFeeds.map(rssFeed => {
-												return followRssFeed(req.params.userId, rssFeed._id);
+												return followRssFeed(
+													req.params.userId,
+													rssFeed._id,
+												);
 											}),
 										);
 									}),
 									Podcast.find({ interest }).then(podcasts => {
 										return Promise.all(
 											podcasts.map(podcast => {
-												return followPodcast(req.params.userId, podcast._id);
+												return followPodcast(
+													req.params.userId,
+													podcast._id,
+												);
 											}),
 										);
 									}),

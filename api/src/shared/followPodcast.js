@@ -4,7 +4,10 @@ import Follow from '../models/follow';
 import config from '../config';
 import stream from 'getstream';
 
-const client = stream.connect(config.stream.apiKey, config.stream.apiSecret);
+const client = stream.connect(
+	config.stream.apiKey,
+	config.stream.apiSecret,
+);
 
 const followPodcast = (userID, podcastID) => {
 	// couple things:

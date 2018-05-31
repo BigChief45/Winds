@@ -19,7 +19,7 @@ const personalization = data => {
 		return axios({
 			baseURL: config.stream.baseUrl,
 			headers: {
-				'Authorization': token,
+				Authorization: token,
 				'Content-Type': 'application/json',
 				'Stream-Auth-Type': 'jwt',
 			},

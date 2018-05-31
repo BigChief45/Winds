@@ -34,7 +34,7 @@ export function getMockClient() {
 
 export async function loadFixture(fixture) {
 	const filters = {
-		User: async (user) => {
+		User: async user => {
 			//XXX: cloning loaded json to enable filtering without thinking about module cache
 			user = Object.assign({}, user);
 
@@ -48,7 +48,7 @@ export async function loadFixture(fixture) {
 
 	for (const modelName in models) {
 		const model = mongoose.model(modelName);
-		const filter = filters[modelName] || ((x) => Promise.resolve(x));
+		const filter = filters[modelName] || (x => Promise.resolve(x));
 		const filteredData = await Promise.all(models[modelName].map(filter));
 
 		await model.collection.insertMany(filteredData);

@@ -79,7 +79,7 @@ function debugFeed(feedType, feedUrls) {
 					}
 				}
 			} else {
-				logger.info(chalk.red('Didn\'t find any articles or episodes.'));
+				logger.info(chalk.red("Didn't find any articles or episodes."));
 			}
 
 			let schema = feedType === 'rss' ? RSS : Podcast;

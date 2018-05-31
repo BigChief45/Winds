@@ -103,6 +103,6 @@ EpisodeSchema.plugin(timestamps, {
 EpisodeSchema.plugin(mongooseStringQuery);
 EpisodeSchema.plugin(autopopulate);
 
-EpisodeSchema.index({ podcast: 1, url: 1 }, {unique: true});
+EpisodeSchema.index({ podcast: 1, url: 1 }, { unique: true });
 
 module.exports = exports = mongoose.model('Episode', EpisodeSchema);

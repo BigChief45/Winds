@@ -27,7 +27,15 @@ export const FollowSchema = new Schema(
 			type: Schema.Types.ObjectId,
 			ref: 'User',
 			autopopulate: {
-				select: ['name', 'email', 'username', 'bio', 'url', 'twitter', 'background'],
+				select: [
+					'name',
+					'email',
+					'username',
+					'bio',
+					'url',
+					'twitter',
+					'background',
+				],
 			},
 			index: true,
 		},
